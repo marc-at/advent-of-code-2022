@@ -8,27 +8,44 @@ fn main() {
     
     let path = &args[1];
 
-    let mut max: Vec<i32> =  Vec::new();
     if let Ok(lines) = read_lines(path) {
-        let mut current = 0;
-        for line in lines {
-            let my_int = line.unwrap().parse::<i32>().unwrap_or(0);
-            if my_int == 0 {
-                if max.len() == 0 || current >= max[0] {
-                    max.insert(0, current);
-                } else {
-                    max.push(current);
+        let carlorie_list: Vec<i32> = lines
+            .map(|e| {
+                 e.unwrap().parse::<String>().unwrap()
+                 .split("\n")
+                 .map(|s| s.parse::<i32>().unwrap_or(0))
+                 .sum()
+            })
+            .collect();
+
+        let calorie_groups: Vec<Vec<i32>> = carlorie_list
+            .into_iter()
+            .fold(Vec::new(), |mut acc, x| {
+                if x == 0 || acc.is_empty() {
+                    acc.push(Vec::new());
                 }
-                current = 0
-            } else {
-                current = current + my_int
-            }
-        }
+                acc.last_mut().unwrap().push(x);
+                acc
+            });
+
+        let mut carorie_totals: Vec<i32> = calorie_groups
+            .into_iter()
+            .map(|o| {
+                o.iter().sum::<i32>()
+            })
+            .collect();
+
+        carorie_totals.sort();
+
+        carorie_totals = carorie_totals
+            .into_iter()
+            .rev()
+            .collect();
+
+        println!("{:?}", carorie_totals[0]);
+        println!("top 3 = {:?}", &carorie_totals[0..3].into_iter().sum::<i32>());
+
     }
-    println!("max = {}", max[0]);
-    max.sort();
-    let y: Vec<_> = max.into_iter().rev().collect();
-    println!("top 3 = {:?}", &y[0..3].into_iter().sum::<i32>());
 }
 
 // The output is wrapped in a Result to allow matching on errors

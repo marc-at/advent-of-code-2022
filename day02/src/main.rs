@@ -73,8 +73,8 @@ fn main() {
             let play2_outcome: &str = &SCORE_OUTCOME_2.get(line_arr[1]).unwrap();
             let play2_key: &str = &(play2_outcome.to_owned() + line_arr[0]);
             score_2 += 
-                SCORE_OUTCOME.get(play2_outcome).unwrap() + 
-                *SCORE_SHAPE.get(MATCH_OUTCOME_PLAY.get(play2_key).unwrap()).unwrap();
+                SCORE_SHAPE.get(MATCH_OUTCOME_PLAY.get(play2_key).unwrap()).unwrap() +
+                SCORE_OUTCOME.get(play2_outcome).unwrap();
         }
         println!("-----------------------------");
         println!("score = {:?}", score);

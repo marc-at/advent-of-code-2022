@@ -3,59 +3,79 @@ use std::io::{self, BufRead};
 use std::path::Path;
 use std::env;
 use std::collections::HashMap;
+use lazy_static::lazy_static;
+// use ::phf::{phf_map, Map};
 
+// static SCORE_SHAPE: phf::Map<&'static str, i32> = phf_map! {
+//     "rock" => 1,
+//     "paper" => 2,
+//     "scissor" => 3
+// };
 
+lazy_static! {
+    static ref SCORE_SHAPE: HashMap<&'static str, i32> = {
+        let mut map = HashMap::new();
+        map.insert("rock", 1);
+        map.insert("paper", 2);
+        map.insert("scissor", 3);
+        map
+    };
+
+    static ref SCORE_OUTCOME: HashMap<&'static str, i32> = {
+        let mut map = HashMap::new();
+        map.insert("win", 6);
+        map.insert("lose", 0);
+        map.insert("draw", 3);
+        map
+    };
+    
+    static ref SHAPE_LOOKUP: HashMap<&'static str, &'static str> = {
+        let mut map = HashMap::new();
+        map.insert("X", "rock");
+        map.insert("Y", "paper");
+        map.insert("Z", "scissor");
+        map
+    };
+
+    static ref SCORE_OUTCOME_2: HashMap<&'static str, &'static str> = {
+        let mut map = HashMap::new();
+        map.insert("X", "lose");
+        map.insert("Y", "draw");
+        map.insert("Z", "win");
+        map
+    };
+    
+    static ref MATCH_OUTCOME: HashMap<&'static str, &'static str> = {
+        let mut map = HashMap::new();
+        map.insert("A X", "draw");
+        map.insert("A Y", "win");
+        map.insert("A Z", "lose");
+        map.insert("B X", "lose");
+        map.insert("B Y", "draw");
+        map.insert("B Z", "win");
+        map.insert("C X", "win");
+        map.insert("C Y", "lose");
+        map.insert("C Z", "draw");
+        map
+    };
+
+    static ref MATCH_OUTCOME_PLAY: HashMap<&'static str, &'static str> = {
+        let mut map = HashMap::new();
+        map.insert("loseA", "scissor");
+        map.insert("drawA", "rock");
+        map.insert("winA", "paper");
+        map.insert("loseB", "rock");
+        map.insert("drawB", "paper");
+        map.insert("winB", "scissor");
+        map.insert("loseC", "paper");
+        map.insert("winC", "rock");
+        map.insert("drawC", "scissor");
+        map
+    };
+}
 
 fn main() {
     println!("Day 02!");
-
-    let score_shape: HashMap<&str,i32> = HashMap::from([
-        ("rock", 1),
-        ("paper", 2),
-        ("scissor", 3)
-    ]);
-
-    let score_outcome: HashMap<&str,i32> = HashMap::from([
-        ("win", 6),
-        ("lose", 0),
-        ("draw", 3)
-    ]);
-    
-    let shape_lookup: HashMap<&str,&str> = HashMap::from([
-        ("X", "rock"),
-        ("Y", "paper"),
-        ("Z", "scissor")
-    ]);
-
-    let score_outcome_2: HashMap<&str,&str> = HashMap::from([
-        ("X", "lose"),
-        ("Y", "draw"),
-        ("Z", "win")
-    ]);
-    
-    let matchup_outcome: HashMap<&str,&str> = HashMap::from([
-        ("A X", "draw"),
-        ("A Y", "win"),
-        ("A Z", "lose"),
-        ("B X", "lose"),
-        ("B Y", "draw"),
-        ("B Z", "win"),
-        ("C X", "win"),
-        ("C Y", "lose"),
-        ("C Z", "draw")
-    ]);
-
-    let matchup_outcome_play: HashMap<&str,&str> = HashMap::from([
-        ("loseA", "scissor"),
-        ("drawA", "rock"),
-        ("winA", "paper"),
-        ("loseB", "rock"),
-        ("drawB", "paper"),
-        ("winB", "scissor"),
-        ("loseC", "paper"),
-        ("winC", "rock"),
-        ("drawC", "scissor")
-    ]);
     
     let args: Vec<String> = env::args().collect();
 
@@ -69,14 +89,14 @@ fn main() {
             let line_arr: Vec<&str> = line_str.split(" ").collect();
 
             score += 
-                score_shape.get(shape_lookup.get(line_arr[1]).unwrap()).unwrap() + 
-                score_outcome.get(matchup_outcome.get(line_str).unwrap()).unwrap();
+                SCORE_SHAPE.get(SHAPE_LOOKUP.get(line_arr[1]).unwrap()).unwrap() + 
+                SCORE_OUTCOME.get(MATCH_OUTCOME.get(line_str).unwrap()).unwrap();
 
-            let play2_outcome: &str = &score_outcome_2.get(line_arr[1]).unwrap();
+            let play2_outcome: &str = &SCORE_OUTCOME_2.get(line_arr[1]).unwrap();
             let play2_key: &str = &(play2_outcome.to_owned() + line_arr[0]);
             score_2 += 
-                score_outcome.get(play2_outcome).unwrap() + 
-                *score_shape.get(matchup_outcome_play.get(play2_key).unwrap()).unwrap();
+                SCORE_OUTCOME.get(play2_outcome).unwrap() + 
+                *SCORE_SHAPE.get(MATCH_OUTCOME_PLAY.get(play2_key).unwrap()).unwrap();
         }
         println!("-----------------------------");
         println!("score = {:?}", score);

@@ -43,9 +43,15 @@ impl ElfGroup {
     }
 
     fn score(&self) -> usize {
-        let res:Vec<char> = self.lines[0].chars().filter(|&c| self.lines[1].contains(c)).collect();
-        let res1:Vec<char> = res.into_iter().filter(|&c| self.lines[2].contains(c)).unique().collect();
-        let score = ALPHA.find(res1[0]);
+        let res:Vec<char> = self.lines[0]
+            .chars()
+            .filter(|&c| self.lines[1].contains(c))
+            .collect::<Vec<char>>()
+            .into_iter()
+            .filter(|&c| self.lines[2].contains(c))
+            .unique()
+            .collect();
+        let score = ALPHA.find(res[0]);
         return score.unwrap();
     }
 }

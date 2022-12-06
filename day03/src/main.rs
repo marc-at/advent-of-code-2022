@@ -64,7 +64,8 @@ fn main() {
     let path = &args[1];
 
     let mut total1: usize = 0;
-    if let Ok(lines) = read_lines(path) {
+    let file_contents = read_lines(path);
+    if let Ok(lines) = &file_contents {
         for line in lines {
             let rucksack: Rucksack = Rucksack::from_string(&line);
             let score: usize = rucksack.score();
@@ -73,9 +74,8 @@ fn main() {
     }
     println!("total = {:?}", total1);
 
-
     let mut total2: usize = 0;
-    if let Ok(lines) = read_lines(path) {
+    if let Ok(lines) = file_contents {
         for x in &lines.into_iter().chunks(3) {
             let chunk = x.collect::<Vec<String>>();
             let elf_group: ElfGroup = ElfGroup::from_chunk(chunk);

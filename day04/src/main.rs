@@ -4,14 +4,12 @@ use std::path::Path;
 use std::env;
 
 fn make_list(dashed: &str) -> Vec<i32> {
-    let parts: Vec<&str> = dashed.split("-").collect();
-    let start = parts[0].parse::<i32>().unwrap();
-    let end = parts[1].parse::<i32>().unwrap();
-    let mut full: Vec<i32> = vec![start];
-    let mut x = start + 1;
-    while x <= end {
-        full.push(x);
-        x += 1;
+    let parts: Vec<i32> = dashed.split("-")
+        .map(|s| s.parse::<i32>().unwrap())
+        .collect();
+    let mut full: Vec<i32> = vec![];
+    for n in parts[0]..parts[1]+1 {
+        full.push(n);
     }
     return full;
 }
